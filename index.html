@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<title>The Planets: an eleVR experience</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				padding: 0;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="full"> <!-- this is the div that gets full screened -->
+			<div id="nav"></div> <!-- The nav system itself lives here -->
+			<iframe id="container"></iframe> <!-- navigate to webvr urls in an iframe -->
+		</div>
+	</body>
+
+	<!-- libraries used. I like gl-matrix for matrices, possibly a bit silly with ThreeJS, though. Also ThreeJS -->
+	<script src="js/lib/gl-matrix.js" type="text/javascript"></script>
+	<script src="js/lib/three.min.js"></script>
+
+	<!-- VRControls.js acquires positional information from connected VR devices and applies the transformations to a three.js camera object. -->
+	<script src="js/vr/VRControls.js"></script>
+
+	<!-- vrcursor.js is the focus cursor -->
+	<script src="js/vr/vrcursor.js"></script>
+
+	<!-- VREffect.js handles stereo camera setup and rendering. -->
+	<script src="js/vr/VREffect.js"></script>
+
+	<!-- This is the main code for the nav system -->
+	<script src="js/worldNav.js"></script>
+</html>
