@@ -1,5 +1,6 @@
 /**
  * @author dmarcos / https://github.com/dmarcos
+ * Changes to support manual keyboard controls by hawksley / https://github.com/hawksley
  */
 
 THREE.VRControls = function ( camera, done ) {
