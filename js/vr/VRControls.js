@@ -41,7 +41,7 @@ THREE.VRControls = function ( camera, done ) {
 
 	this._init();
 
-	this.manualRotation = quat.create();
+	this.manualRotation = new THREE.Quaternion();
 
 	this.manualControls = {
       'a' : {index: 1, sign: 1, active: 0},
@@ -64,11 +64,11 @@ THREE.VRControls = function ( camera, done ) {
 		this.updateTime = newTime;
 
 	  var interval = (newTime - oldTime) * 0.001;
-	  var update = quat.fromValues(this.manualRotateRate[0] * interval,
+	  var update = new THREE.Quaternion(this.manualRotateRate[0] * interval,
 	                               this.manualRotateRate[1] * interval,
 	                               this.manualRotateRate[2] * interval, 1.0);
-	  quat.normalize(update, update);
-	  quat.multiply(manualRotation, manualRotation, update);
+	  update.normalize();
+		manualRotation.multiplyQuaternions(manualRotation, update);
 
 		if ( camera ) {
 			if ( !vrState ) {
@@ -77,18 +77,19 @@ THREE.VRControls = function ( camera, done ) {
 			}
 
 			// Applies head rotation from sensors data.
-			var totalRotation = quat.create();
+			var totalRotation = new THREE.Quaternion();
       var state = vrState.hmd.rotation;
-      if (vrState.hmd.rotation[0] !== 0 ||
-					vrState.hmd.rotation[1] !== 0 ||
-					vrState.hmd.rotation[2] !== 0 ||
-					vrState.hmd.rotation[3] !== 0) {
-        quat.multiply(totalRotation, manualRotation, vrState.hmd.rotation);
+      if (state[0] !== 0 ||
+					state[1] !== 0 ||
+					state[2] !== 0 ||
+					state[3] !== 0) {
+				var vrStateRotation = new THREE.Quaternion(state[0], state[1], state[2], state[3]);
+        totalRotation.multiplyQuaternions(manualRotation, vrStateRotation);
       } else {
         totalRotation = manualRotation;
       }
 
-			camera.quaternion.fromArray( totalRotation );
+			camera.quaternion.copy( totalRotation );
 		}
 	};
 
@@ -99,6 +100,24 @@ THREE.VRControls = function ( camera, done ) {
 		}
 		vrInput.zeroSensor();
 	};
+
+	this.getRotation = function() {
+		var manualRotation = this.manualRotation;
+
+		var totalRotation = new THREE.Quaternion();
+		var state = this.getVRState().hmd.rotation;
+		if (state[0] !== 0 ||
+				state[1] !== 0 ||
+				state[2] !== 0 ||
+				state[3] !== 0) {
+			var vrStateRotation = new THREE.Quaternion(state[0], state[1], state[2], state[3]);
+			totalRotation.multiplyQuaternions(manualRotation, vrStateRotation);
+		} else {
+			totalRotation = manualRotation;
+		}
+
+		return totalRotation;
+	}
 
 	this.getVRState = function() {
 		var vrInput = this._vrInput;

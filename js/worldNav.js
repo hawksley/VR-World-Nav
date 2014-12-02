@@ -3,7 +3,7 @@ Add videos here.
 */
 var videoChoices = [
 	{
-    "name": "elevr1",
+    "name": "actually a video",
     "texture": 'images/denver-botanical-5-small.jpg',
 		"url": "http://mozvr.com/content/elevr4",
 		"title": {
@@ -13,7 +13,7 @@ var videoChoices = [
     "selected": false
 	},
   {
-    "name": "elevr2",
+    "name": "vi thing",
     "texture": 'images/kirby-cove-1-small.jpg',
     "url": "http://vihart.github.io/webVR-playing-with/compound",
     "title": {
@@ -23,7 +23,7 @@ var videoChoices = [
     "selected": false
   },
   {
-    "name": "elevr3",
+    "name": "a different vi thing",
     "texture": 'images/mosaic-math-art.JPG',
     "url": "http://vihart.github.io/webVR-playing-with/inside",
     "title": {
@@ -33,7 +33,7 @@ var videoChoices = [
     "selected": false
   },
   {
-    "name": "elevr4",
+    "name": "emily thing",
     "texture": 'images/utrecht-canal.jpg',
     "url": "http://emilyeifler.github.io/this-is-my-horse/horse.html",
     "title": {
@@ -114,6 +114,13 @@ window.WorldNav = (function() {
       self.scene.add( videoChoices[i].planetMesh );
     }
 
+		self.dynamicTexture	= new THREEx.DynamicTexture(512,512);
+		self.dynamicTexture.context.font	= "normal 50px Verdana";
+		self.dynamicTexture.clear().drawText("", undefined, 256, 'red');
+		var geometry = new THREE.PlaneGeometry( 20, 20 );
+		var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: true, map	: self.dynamicTexture.texture, side: THREE.DoubleSide} );
+		self.titleMesh = new THREE.Mesh( geometry, material );
+
 		self.selectedPlanet = videoChoices[0];
 		self.frameCount = 0;
 		self.growWorld = function(selectedPlanet) {
@@ -142,15 +149,21 @@ window.WorldNav = (function() {
         self.cursor.updatePosition();
         for (var i=0; i<videoChoices.length; i++) {
           if (self.cursor.objectMouseOver === videoChoices[i].planetMesh) {
-            //make brighter, TODO: something nicer later?
             if (!videoChoices[i].selected) {
               videoChoices[i].selected = true;
               videoChoices[i].planetMesh.material.color = {r:1, g:1, b:1};
+							self.dynamicTexture.clear().drawText(videoChoices[i].name, undefined, 256, 'red');
+							self.titleMesh.position.x = videoChoices[i].planetMesh.position.x;
+							self.titleMesh.position.z = videoChoices[i].planetMesh.position.z;
+							self.titleMesh.position.y = -10;
+							self.titleMesh.rotation.setFromQuaternion(self.controls.getRotation());
+							self.scene.add(self.titleMesh);
             }
             videoChoices[i].planetMesh.rotation.y += 0.02;
           } else {
             //make darker
             if (videoChoices[i].selected) {
+							self.scene.remove(self.titleMesh);
               videoChoices[i].selected = false;
               videoChoices[i].planetMesh.material.color = {r:0.5, g:0.5, b:0.5};
             }
