@@ -72,7 +72,7 @@ THREE.VRControls = function ( camera, done ) {
 
 		if ( camera ) {
 			if ( !vrState ) {
-				camera.quaternion.fromArray(manualRotation);
+				camera.quaternion.copy(manualRotation);
 				return;
 			}
 
