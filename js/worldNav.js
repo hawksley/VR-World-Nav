@@ -13,9 +13,9 @@ var videoChoices = [
     "selected": false
 	},
   {
-    "name": "vi thing",
+    "name": "WebVR Experiments",
     "texture": 'images/kirby-cove-1-small.jpg',
-    "url": "http://vihart.github.io/webVR-playing-with/compound",
+    "url": "http://vihart.github.io/webVR-playing-with/",
     "title": {
       "title": "ELEVR: Talk chat show EP.4",
       "titleCredits": "ELEVR\n-\nWebGL"
@@ -23,9 +23,9 @@ var videoChoices = [
     "selected": false
   },
   {
-    "name": "a different vi thing",
+    "name": "Under Construction",
     "texture": 'images/mosaic-math-art.JPG',
-    "url": "http://vihart.github.io/webVR-playing-with/inside",
+    "url": "http://vihart.github.io/webVR-playing-with/underConstruction.html",
     "title": {
       "title": "ELEVR: Talk chat show EP.4",
       "titleCredits": "ELEVR\n-\nWebGL"
@@ -33,9 +33,9 @@ var videoChoices = [
     "selected": false
   },
   {
-    "name": "emily thing",
+    "name": "Room with a View",
     "texture": 'images/utrecht-canal.jpg',
-    "url": "http://emilyeifler.github.io/this-is-my-horse/horse.html",
+    "url": "http://emilyeifler.github.io/roomwithaview/apartment.html",
     "title": {
       "title": "ELEVR: Talk chat show EP.4",
       "titleCredits": "ELEVR\n-\nWebGL"
