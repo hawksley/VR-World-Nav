@@ -23,7 +23,7 @@ var videoChoices = [
     "selected": false
   },
   {
-    "name": "Under Construction",
+    "name": "90's style webVR",
     "texture": 'images/mosaic-math-art.JPG',
     "url": "http://vihart.github.io/webVR-playing-with/underConstruction.html",
     "title": {
