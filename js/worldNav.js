@@ -118,7 +118,7 @@ window.WorldNav = (function() {
 		self.dynamicTexture.context.font	= "normal 50px Verdana";
 		self.dynamicTexture.clear().drawText("", undefined, 256, 'red');
 		var geometry = new THREE.PlaneGeometry( 20, 20 );
-		var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: true, map	: self.dynamicTexture.texture, side: THREE.DoubleSide} );
+		var material = new THREE.MeshBasicMaterial( {color: 0xffffff, transparent: true, map	: self.dynamicTexture.texture, side: THREE.DoubleSide} );
 		self.titleMesh = new THREE.Mesh( geometry, material );
 
 		self.selectedPlanet = videoChoices[0];

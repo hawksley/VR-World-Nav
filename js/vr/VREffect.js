@@ -1,5 +1,6 @@
 /**
  * @author dmarcos / https://github.com/dmarcos
+ * @author hawksley / https://github.com/hawksley (added phone VR support, and fixed full screen for all devices)
  *
  * It handles stereo rendering
  * If mozGetVRDevices and getVRDevices APIs are not available it gracefuly falls back to a
@@ -30,6 +31,15 @@ THREE.VREffect = function ( renderer, done ) {
 
 	this._init = function() {
 		var self = this;
+
+		// default some stuff for mobile VR
+		self.phoneVR = new PhoneVR();
+		self.leftEyeTranslation = { x: -0.03200000151991844, y: -0, z: -0, w: 0 };
+		self.rightEyeTranslation = { x: 0.03200000151991844, y: -0, z: -0, w: 0 };
+		self.leftEyeFOV = { upDegrees: 53.04646464878503, rightDegrees: 47.52769258067174, downDegrees: 53.04646464878503, leftDegrees: 46.63209579904155 };
+		self.rightEyeFOV = { upDegrees: 53.04646464878503, rightDegrees: 46.63209579904155, downDegrees: 53.04646464878503, leftDegrees: 47.52769258067174 };
+
+
 		if ( !navigator.mozGetVRDevices && !navigator.getVRDevices ) {
 			if ( done ) {
 				done("Your browser is not VR Ready");
@@ -48,13 +58,16 @@ THREE.VREffect = function ( renderer, done ) {
 				if ( devices[i] instanceof HMDVRDevice ) {
 					vrHMD = devices[i];
 					self._vrHMD = vrHMD;
-					self.leftEyeTranslation = vrHMD.getEyeTranslation( "left" );
-					self.rightEyeTranslation = vrHMD.getEyeTranslation( "right" );
-					self.leftEyeFOV = vrHMD.getRecommendedEyeFieldOfView( "left" );
-					self.rightEyeFOV = vrHMD.getRecommendedEyeFieldOfView( "right" );
+					var parametersLeft = vrHMD.getEyeParameters( "left" );
+					var parametersRight = vrHMD.getEyeParameters( "right" );
+					self.leftEyeTranslation = parametersLeft.eyeTranslation;
+					self.rightEyeTranslation = parametersRight.eyeTranslation;
+					self.leftEyeFOV = parametersLeft.recommendedFieldOfView;
+					self.rightEyeFOV = parametersRight.recommendedFieldOfView;
 					break; // We keep the first we encounter
 				}
 			}
+
 			if ( done ) {
 				if ( !vrHMD ) {
 				 error = 'HMD not available';
@@ -75,6 +88,12 @@ THREE.VREffect = function ( renderer, done ) {
 			this.renderStereo.apply( this, arguments );
 			return;
 		}
+
+		if (this.phoneVR.deviceAlpha !== null) { //default to stereo render for devices with orientation sensor, like mobile
+			this.renderStereo.apply( this, arguments );
+			return;
+		}
+
 		// Regular render mode if not HMD
 		renderer.render.apply( this._renderer, arguments );
 	};
@@ -124,14 +143,24 @@ THREE.VREffect = function ( renderer, done ) {
 		var renderer = this._renderer;
 		var vrHMD = this._vrHMD;
 		var canvasOriginalSize = this._canvasOriginalSize;
-		if (!vrHMD) {
-			return;
-		}
+
 		// If state doesn't change we do nothing
 		if ( enable === this._fullScreen ) {
 			return;
 		}
 		this._fullScreen = !!enable;
+
+		if (!vrHMD) {
+			var canvas = renderer.domElement;
+			if (canvas.mozRequestFullScreen) {
+				canvas.mozRequestFullScreen(); // Firefox
+			} else if (canvas.webkitRequestFullscreen) {
+				canvas.webkitRequestFullscreen(); // Chrome and Safari
+			} else if (canvas.requestFullScreen){
+				canvas.requestFullscreen();
+			}
+			return;
+		}
 
 		// VR Mode disabled
 		if ( !enable ) {
@@ -234,4 +263,5 @@ THREE.VREffect = function ( renderer, done ) {
 		};
 		return this.FovPortToProjection(fovPort, rightHanded, zNear, zFar);
 	};
+
 };
